@@ -37,10 +37,21 @@ sleep 1
 pactl load-module module-native-protocol-tcp auth-ip-acl=127.0.0.1 auth-anonymous=1 2>/dev/null
 export PULSE_SERVER=127.0.0.1
 
+# Load GPU config (Important for Termux-X11 stability)
+source ~/.config/hacklab-gpu.sh 2>/dev/null
+
 # 5. Start Termux-X11 server
 echo "📺 Starting high-performance X11 display..."
-termux-x11 :0 -ac &
+# Log X11 output for debugging
+termux-x11 :0 -ac > $PREFIX/tmp/x11.log 2>&1 &
 sleep 3
+# Check if X11 is running
+if ! pgrep -f "termux-x11" > /dev/null; then
+    echo "❌ Error: Termux-X11 failed to start!"
+    echo "Logs:"
+    cat $PREFIX/tmp/x11.log
+    exit 1
+fi
 
 # 6. Launch NetHunter Desktop
 echo "🚀 Launching Kali XFCE..."
