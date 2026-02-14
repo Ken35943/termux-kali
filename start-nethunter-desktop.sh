@@ -53,7 +53,8 @@ echo ""
 
 # Pass environment variables to NetHunter
 # We launch dbus-launch to ensure session bus is active
-nh -r -c "export DISPLAY=:0 && export PULSE_SERVER=127.0.0.1 && dbus-launch --exit-with-session xfce4-session"
+# Use explicit bash to avoid argument parsing issues
+nh -r bash -c "export DISPLAY=:0 && export PULSE_SERVER=127.0.0.1 && dbus-launch --exit-with-session xfce4-session"
 
 echo "🛑 Desktop stopped."
 pkill -9 -f "termux.x11" 2>/dev/null
